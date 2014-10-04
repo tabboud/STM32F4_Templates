@@ -6,7 +6,10 @@
 
 #include <stdio.h>
 #include "stm32f4xx.h"
-#include "stm32f4xx_conf.h"
+#include "stm32f4xx_conf.h" //This is included by stm32f4xx.h
+
+
+int EXTI0Flag = 0 ;
 
 volatile uint32_t msTicks;                      /* counts 1ms timeTicks       */
 /*----------------------------------------------------------------------------
@@ -33,12 +36,41 @@ void init(){
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
 
   // Configure PD12, PD13, PD14 and PD15 in output pushpull mode
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+
+  // ---------- GPIO  for BTN -------- //
+  NVIC_InitTypeDef NVIC_InitStructure;
+  EXTI_InitTypeDef EXTI_InitStructure;
+
+  /* Enable GPIOA clock */
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+  /* Enable SYSCFG clock */
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+  /* Configure PA0 pin as input floating */
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; //Load parameters into GPIO data structure
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+  GPIO_Init(GPIOA, &GPIO_InitStructure); //Pass structure to GPIO initialization function
+  /* Connect EXTI Line0 to PA0 pin */
+  SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource0);
+  /* Configure EXTI Line0 */
+  EXTI_InitStructure.EXTI_Line = EXTI_Line0; //Load parameters into EXTI data structure
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising; 
+  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+  EXTI_Init(&EXTI_InitStructure); //Pass structure to EXTI initialization function
+  /* Enable and set EXTI Line0 Interrupt to the lowest priority */
+  NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn; //Load parameters into NVIC data structure
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure); //Pass structure to NVIC initialization function
 }
 
 
@@ -53,22 +85,25 @@ int main (void) {
   }
 
   init();
+
+  GPIO_SetBits(GPIOD, GPIO_Pin_13);
+
+  while(1){}
+
   
 
-  //Alternate way to set and clear bits
-  GPIOD->BSRRL = (1<<12);  //set GPIOD pin 12
-  Delay(1000);
-  GPIOD->BSRRH = (1<<12);  //clear GPIOD pin 12
-  Delay(1000);
-  GPIOD->BSRRL = (1<<12);
-
-  while(1){
-    GPIO_ToggleBits(GPIOD, GPIO_Pin_12);
-    Delay(1000);
-  }
   return 0;
 }
 
+
+void EXTI0_IRQHandler(void) {
+  //Clear the EXTI pending bits
+  NVIC_ClearPendingIRQ(EXTI0_IRQn);
+  EXTI->PR|=(1<<0);
+  //Make sure the Button is really pressed
+  if ((GPIOA->IDR & (1<<0)))
+    GPIO_ToggleBits(GPIOD, GPIO_Pin_13);
+}
 
 
 
