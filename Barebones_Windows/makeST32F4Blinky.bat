@@ -7,6 +7,10 @@ set build=%CD%\build
 set Include_Paths=-I%CD%\Libraries\CMSIS\STM32F4xx -I%CD%\Libraries\CMSIS\Include -I%CD%\Libraries\STM32F4xx_StdPeriph_Driver\inc -I%CD%
 set LIB_PATH=-L%CD%\Libraries\STM32F4xx_StdPeriph_Driver
 
+REM Create build and obj dir
+mkdir build
+mkdir obj
+
 REM assemble with '-g' omitted where we want to hide things in the AXF
 REM arm-none-eabi-as -g -mcpu=cortex-m4 -o aDemo.o CortexM4asmOps_01.asm
 arm-none-eabi-as -g -mcpu=cortex-m4 -o aStartup.o SimpleStartSTM32F4_01.asm

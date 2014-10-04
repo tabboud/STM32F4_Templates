@@ -4,9 +4,8 @@ set obj=%CD%\obj
 set build=%CD%\build
 
 REM deleting
-del %obj%\*.o
-del %build%\*.elf
-del %build%\*.hex
+rmdir /S /Q %CD%\obj
+rmdir /S /Q %CD%\build
 del *.AXF
 del *.dep
 del *.map
