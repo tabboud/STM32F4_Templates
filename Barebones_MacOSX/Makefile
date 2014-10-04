@@ -2,6 +2,7 @@
 
 SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c startup_stm32f4xx.c
 S_SRCS = 
+ASM_SRCS = 
 
 # USB
 # SRCS += usbd_usr.c usbd_cdc_vcp.c usbd_desc.c usb_bsp.c
@@ -11,8 +12,8 @@ PROJ_NAME = blinky
 OUTPATH = build
 
 OUTPATH := $(abspath $(OUTPATH))
-
 BASEDIR := $(abspath ./)
+MKDIR_P = mkdir -p
 
 ###################################################
 
@@ -83,7 +84,7 @@ OBJS += $(S_SRCS:.s=.o)
 
 .PHONY: lib proj
 
-all: lib proj
+all: dir lib proj
 	$(SIZE) $(OUTPATH)/$(PROJ_NAME).elf
 
 lib:
@@ -102,6 +103,9 @@ $(OUTPATH)/$(PROJ_NAME).elf: $(OBJS)
 	$(OBJCOPY) -O ihex $(OUTPATH)/$(PROJ_NAME).elf $(OUTPATH)/$(PROJ_NAME).hex
 	$(OBJCOPY) -O binary $(OUTPATH)/$(PROJ_NAME).elf $(OUTPATH)/$(PROJ_NAME).bin
 	$(OBJDUMP) -S --disassemble $(OUTPATH)/$(PROJ_NAME).elf > $(OUTPATH)/$(PROJ_NAME).dis
+
+dir:
+	$(MKDIR_P) $(OUTPATH)
 
 clean:
 	rm -f $(OUTPATH)/*.o
