@@ -1,4 +1,4 @@
-REM cleanBlinky.bat wmh 2013-01-29 : cleans intermediate compiler results and output
+REM Cleans intermediate compiler results, lib files, and output
 set path=.\;C:\_software_installs\yagarto\bin;C:\_software_installs\yagarto\yagarto-tools-20100703\bin;
 set obj=%CD%\obj
 set build=%CD%\build

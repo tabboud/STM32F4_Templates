@@ -1,6 +1,5 @@
 @;Macros tailored to the P24 expansion board
 
-
 .macro SET_bit addr, bit		@;Set bit to 1 of [addr](which is given by addr)
 	ldr r2, =\addr				@;Move address value into r2: 0x40023830
 	ldr r1, [r2]				@;Load the value of addr into r1

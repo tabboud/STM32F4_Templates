@@ -100,7 +100,8 @@ asmSTR_examples:			@;examples using different LDR addressing and decoration
 
 	bx lr					@; return to the caller
 
-	
+
+@;Example to turn on LED15 (GPIOD_15) using macros defined in include file	
 .equ GPIOD_BASE,0x40020C00
 	.global turnOnLED
 	.thumb_func
