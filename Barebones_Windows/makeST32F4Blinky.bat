@@ -1,7 +1,6 @@
 REM FIX THE MULTI .bat file issue
 REM  makeSTM32F4Blinky.bat wmh 2013-02-26 : compile STM32F4DISCOVERY LED demo and .asm opcode demo 
 REM !!optional -L and -l switches allow linking to Cortex M4 library functions for divide, etc. 
-set path=.\;C:\yagarto_gcc472\bin;
 set objdir=%CD%\obj
 set build=%CD%\build
 set Include_Paths=-I%CD%\Libraries\CMSIS\STM32F4xx -I%CD%\Libraries\CMSIS\Include -I%CD%\Libraries\STM32F4xx_StdPeriph_Driver\inc -I%CD%

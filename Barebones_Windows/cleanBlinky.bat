@@ -14,7 +14,7 @@ del *.s
 del *.lst
 
 REM Deletes the Library build
-REM cd %CD%\Libraries\STM32F4xx_StdPeriph_Driver
-REM call cleanLibrary.bat
+cd %CD%\Libraries\STM32F4xx_StdPeriph_Driver
+call cleanLibrary.bat
 
 pause
