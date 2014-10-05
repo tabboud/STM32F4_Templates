@@ -1,11 +1,9 @@
-# Sources
+#MakeFile for STM32F4-Discovery Board
 
+# Sources
 SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c startup_stm32f4xx.c
 S_SRCS = 
 ASM_SRCS = 
-
-# USB
-# SRCS += usbd_usr.c usbd_cdc_vcp.c usbd_desc.c usb_bsp.c
 
 # Project name
 PROJ_NAME = blinky
@@ -44,8 +42,6 @@ CPU = -mcpu=cortex-m4 -mthumb
 CFLAGS  = $(CPU) -c -std=gnu99 -g -O2 -Wall
 LDFLAGS  = $(CPU) -mlittle-endian -mthumb-interwork -nostartfiles -Wl,--gc-sections,--cref
 
-# -Map=$(OUTPATH)/$(PROJ_NAME).map, --specs=nano.specs  <-- removed from LDFlAGS to supress errors using make in mintty
-
 ifeq ($(FLOAT_TYPE), hard)
 CFLAGS += -fsingle-precision-constant -Wdouble-promotion
 CFLAGS += -mfpu=fpv4-sp-d16 -mfloat-abi=hard
@@ -60,24 +56,19 @@ endif
 
 CFLAGS += -D$(DEVICE_DEF)
 
-#vpath %.c src
 vpath %.a lib
 
 
 # Includes
 INCLUDE_PATHS = -I$(BASEDIR)/inc -I$(BASEDIR)/lib/cmsis/stm32f4xx -I$(BASEDIR)/lib/cmsis/include -I$(BASEDIR)
 INCLUDE_PATHS += -I$(BASEDIR)/lib/Conf
+INCLUDE_PATHS += -I$(BASEDIR)/lib/STM32F4xx_StdPeriph_Driver/inc
 
-# Library paths
+# Library path for Peripheral Driver
 LIBPATHS = -L$(BASEDIR)/lib/STM32F4xx_StdPeriph_Driver
 
 # Libraries to link
 LIBS = -lstdperiph -lc -lgcc -lnosys
-
-# Extra includes
-INCLUDE_PATHS += -I$(BASEDIR)/lib/STM32F4xx_StdPeriph_Driver/inc
-
-#CFLAGS += -Map $(OUTPATH)/$(PROJ_NAME).map
 
 OBJS = $(SRCS:.c=.o)
 OBJS += $(S_SRCS:.s=.o)
@@ -116,8 +107,8 @@ clean:
 	rm -f $(OUTPATH)/$(PROJ_NAME).bin
 	rm -f $(OUTPATH)/$(PROJ_NAME).dis
 	rm -f $(OUTPATH)/$(PROJ_NAME).map
-	# Remove this line if you don't want to clean the libs as well
-	#$(MAKE) clean -C lib
+	# Remove the following line if you don't want to clean the libs as well
+	$(MAKE) clean -C lib
 
 flash:
 	st-flash write build/$(PROJ_NAME).bin 0x08000000
