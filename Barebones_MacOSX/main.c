@@ -1,6 +1,10 @@
 /*
 Barebones Blinky example MacOSX using arm-none-eabi and ST_Link
 
+This is sample code to blink the user LEDs using three different methods:
+1. Use the STD_Periph driver functions
+2. Use the STD_Periph driver structures, NOT functions
+3. Use assembly level functions defined in CortexM4asmOps.asm
 */
 #include <stdio.h>
 #include "stm32f4xx.h"
@@ -54,17 +58,26 @@ int main(void) {
 	setSysTick();
 	init_GPIO();
 
+int i=0;
 // Blink LED14 using Periph Driver functions
-	while(1){
+	for(i=0; i<10; i++){
 		GPIO_ToggleBits(GPIOD, GPIO_Pin_14);
 		Delay(1000);	// Wait 1 second
 	}
 
-// Assembly way to blink LED13
-	while(1){
-		turnOnLED(0x40020C00, 13);
+//Blink LED13 using Periph Driver structures, NOT functions
+	for(i=0; i<10; i++){	
+		GPIOD->BSRRL = GPIO_Pin_13;
 		Delay(1000);
-		turnOffLED(0x40020C00, 13);
+		GPIOD->BSRRH = GPIO_Pin_13;
+		Delay(1000);
+	}
+
+// Blink LED12 using assembly functions
+	while(1){
+		turnOnLED(0x40020C00, 12);
+		Delay(1000);
+		turnOffLED(0x40020C00, 12);
 		Delay(1000);
 	}
 
