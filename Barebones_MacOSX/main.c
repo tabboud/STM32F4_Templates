@@ -2,11 +2,8 @@
 Barebones Blinky example MacOSX using arm-none-eabi and ST_Link
 
 */
-
-
 #include <stdio.h>
 #include "stm32f4xx.h"
-
 
 // ASM function prototypes (defined in CortexM4asmOps.asm)
 extern void turnOnLED(uint32_t, int);
@@ -36,7 +33,7 @@ void setSysTick(){
 	}
 }
 
-void init() {
+void init_GPIO() {
 	GPIO_InitTypeDef  GPIO_InitStructure;
 
 	// ---------- GPIO  for LEDS -------- //
@@ -55,10 +52,15 @@ void init() {
 
 int main(void) {
 	setSysTick();
-	init();
+	init_GPIO();
 
+// Blink LED14 using Periph Driver functions
+	while(1){
+		GPIO_ToggleBits(GPIOD, GPIO_Pin_14);
+		Delay(1000);	// Wait 1 second
+	}
 
-// This is how you call the asm functions from C
+// Assembly way to blink LED13
 	while(1){
 		turnOnLED(0x40020C00, 13);
 		Delay(1000);
