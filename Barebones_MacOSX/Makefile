@@ -119,7 +119,7 @@ clean:
 	rm -f $(OUTPATH)/$(PROJ_NAME).dis
 	rm -f $(OUTPATH)/$(PROJ_NAME).map
 	# Remove this line if you don't want to clean the libs as well
-	#$(MAKE) clean -C lib
+	$(MAKE) clean -C lib
 
 flash:
 	st-flash write build/$(PROJ_NAME).bin 0x08000000
