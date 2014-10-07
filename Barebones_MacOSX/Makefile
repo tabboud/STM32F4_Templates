@@ -2,7 +2,7 @@
 
 SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c startup_stm32f4xx.c
 S_SRCS = 
-ASM_SRCS = 
+ASM_SRCS = CortexM4asmOps.asm
 
 # USB
 # SRCS += usbd_usr.c usbd_cdc_vcp.c usbd_desc.c usb_bsp.c
@@ -79,6 +79,7 @@ INCLUDE_PATHS += -I$(BASEDIR)/lib/STM32F4xx_StdPeriph_Driver/inc
 
 OBJS = $(SRCS:.c=.o)
 OBJS += $(S_SRCS:.s=.o)
+OBJS += $(ASM_SRCS:.asm=.o)
 
 ###################################################
 
@@ -94,6 +95,9 @@ proj: $(OUTPATH)/$(PROJ_NAME).elf
 
 .s.o:
 	$(AS) $(CPU) -o $(addprefix $(OUTPATH)/, $@) $<
+
+CortexM4asmOps.o: CortexM4asmOps.asm
+	$(AS) $(CPU) -o $(OUTPATH)/CortexM4asmOps.o CortexM4asmOps.asm
 
 .c.o:
 	$(CC) $(CFLAGS) -std=gnu99 $(INCLUDE_PATHS) -o $(addprefix  $(OUTPATH)/, $@) $<
@@ -115,7 +119,7 @@ clean:
 	rm -f $(OUTPATH)/$(PROJ_NAME).dis
 	rm -f $(OUTPATH)/$(PROJ_NAME).map
 	# Remove this line if you don't want to clean the libs as well
-	$(MAKE) clean -C lib
+	#$(MAKE) clean -C lib
 
 flash:
 	st-flash write build/$(PROJ_NAME).bin 0x08000000
