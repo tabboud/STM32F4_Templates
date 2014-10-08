@@ -1,11 +1,9 @@
-# Sources
+# STM32F4-Discovery Makefile for Mac OSX
 
-SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c startup_stm32f4xx.c
-S_SRCS = 
-ASM_SRCS = CortexM4asmOps.asm
+SRCS=$(wildcard *.c) 
+# Add assembly source files here or use $(wildcard *.s) for all .s files
+S_SRCS = CortexM4asmOps.s
 
-# USB
-# SRCS += usbd_usr.c usbd_cdc_vcp.c usbd_desc.c usb_bsp.c
 
 # Project name
 PROJ_NAME = blinky
@@ -14,6 +12,7 @@ OUTPATH = build
 OUTPATH := $(abspath $(OUTPATH))
 BASEDIR := $(abspath ./)
 MKDIR_P = mkdir -p
+
 
 ###################################################
 
@@ -58,13 +57,13 @@ endif
 
 CFLAGS += -D$(DEVICE_DEF)
 
-#vpath %.c src
 vpath %.a lib
 
 
 # Includes
 INCLUDE_PATHS = -I$(BASEDIR)/inc -I$(BASEDIR)/lib/cmsis/stm32f4xx -I$(BASEDIR)/lib/cmsis/include -I$(BASEDIR)
 INCLUDE_PATHS += -I$(BASEDIR)/lib/Conf
+INCLUDE_PATHS += -I$(BASEDIR)/lib/STM32F4xx_StdPeriph_Driver/inc
 
 # Library paths
 LIBPATHS = -L$(BASEDIR)/lib/STM32F4xx_StdPeriph_Driver
@@ -72,14 +71,8 @@ LIBPATHS = -L$(BASEDIR)/lib/STM32F4xx_StdPeriph_Driver
 # Libraries to link
 LIBS = -lstdperiph -lc -lgcc -lnosys
 
-# Extra includes
-INCLUDE_PATHS += -I$(BASEDIR)/lib/STM32F4xx_StdPeriph_Driver/inc
-
-#CFLAGS += -Map $(OUTPATH)/$(PROJ_NAME).map
-
 OBJS = $(SRCS:.c=.o)
 OBJS += $(S_SRCS:.s=.o)
-OBJS += $(ASM_SRCS:.asm=.o)
 
 ###################################################
 
@@ -95,9 +88,6 @@ proj: $(OUTPATH)/$(PROJ_NAME).elf
 
 .s.o:
 	$(AS) $(CPU) -o $(addprefix $(OUTPATH)/, $@) $<
-
-CortexM4asmOps.o: CortexM4asmOps.asm
-	$(AS) $(CPU) -o $(OUTPATH)/CortexM4asmOps.o CortexM4asmOps.asm
 
 .c.o:
 	$(CC) $(CFLAGS) -std=gnu99 $(INCLUDE_PATHS) -o $(addprefix  $(OUTPATH)/, $@) $<
@@ -118,7 +108,7 @@ clean:
 	rm -f $(OUTPATH)/$(PROJ_NAME).bin
 	rm -f $(OUTPATH)/$(PROJ_NAME).dis
 	rm -f $(OUTPATH)/$(PROJ_NAME).map
-	# Remove this line if you don't want to clean the libs as well
+	# Remove this line if you don't want to clean the Libraries as well
 	$(MAKE) clean -C lib
 
 flash:

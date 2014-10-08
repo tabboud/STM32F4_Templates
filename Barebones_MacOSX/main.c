@@ -25,12 +25,7 @@ static void Delay(__IO uint32_t dlyTicks){
 }
 
 void setSysTick(){
-	// ---------- SysTick timer -------- //
-	 /****************************************
-     *SystemFrequency/1000      1ms         *
-     *SystemFrequency/100000    10us        *
-     *SystemFrequency/1000000   1us         *
-     *****************************************/
+	// ---------- SysTick timer (1ms) -------- //
 	if (SysTick_Config(SystemCoreClock / 1000)) {
 		// Capture error
 		while (1){};
@@ -59,7 +54,8 @@ int main(void) {
 	init_GPIO();
 
 int i=0;
-// Blink LED14 using Periph Driver functions
+
+//Blink LED14 using Periph Driver functions
 	for(i=0; i<10; i++){
 		GPIO_ToggleBits(GPIOD, GPIO_Pin_14);
 		Delay(1000);	// Wait 1 second
