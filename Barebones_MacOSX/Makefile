@@ -108,7 +108,7 @@ clean:
 	rm -f $(OUTPATH)/$(PROJ_NAME).bin
 	rm -f $(OUTPATH)/$(PROJ_NAME).dis
 	rm -f $(OUTPATH)/$(PROJ_NAME).map
-	# Remove this line if you don't want to clean the Libraries as well
+	# Remove the following line if you don't want to clean the Libraries as well
 	$(MAKE) clean -C lib
 
 flash:

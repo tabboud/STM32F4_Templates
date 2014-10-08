@@ -1,9 +1,8 @@
-#MakeFile for STM32F4-Discovery Board
+# STM32F4-Discovery Makefile for Windows
 
-# Sources
-SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c startup_stm32f4xx.c
-S_SRCS = 
-ASM_SRCS = 
+SRCS=$(wildcard *.c) 
+# Add assembly source files here or use $(wildcard *.s) for all .s files
+S_SRCS = CortexM4asmOps.s
 
 # Project name
 PROJ_NAME = blinky
@@ -107,9 +106,11 @@ clean:
 	rm -f $(OUTPATH)/$(PROJ_NAME).bin
 	rm -f $(OUTPATH)/$(PROJ_NAME).dis
 	rm -f $(OUTPATH)/$(PROJ_NAME).map
-	# Remove the following line if you don't want to clean the libs as well
+	# Remove the following line if you don't want to clean the Libraries as well
 	$(MAKE) clean -C lib
 
-flash:
-	st-flash write build/$(PROJ_NAME).bin 0x08000000
+# TODO: Implement a command line flash with the ST-Link Utility on Windows
+# 		for now, flash with ST-Link Utility gui
+# flash:
+# 	st-flash write build/$(PROJ_NAME).bin 0x08000000
 	
